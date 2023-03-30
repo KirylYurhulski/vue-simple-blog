@@ -1,26 +1,51 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="container-sm">
+    <form class="row g-2 mt-4" @submit.prevent>
+      <div class="col-auto">
+        <input v-model="limit" type="text" class="form-control-plaintext" placeholder="Input posts limit...">
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-primary mb-3" @click="onSubmit">Load</button>
+      </div>
+    </form>
+    <hr>
+    <PostList class="mt-4" v-if="allPosts.length" :posts="allPosts"/>
+    <div v-else-if="errorMessage" class="alert alert-danger mt-4" role="alert" >
+      {{ errorMessage }}
+    </div>
+    <div v-else><div class="alert alert-warning mt-4" role="alert">
+      {{ warningMessage }}
+    </div></div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import PostList from '@/components/PostList.vue'
+import {mapActions, mapGetters} from 'vuex'
 
 export default {
   name: 'App',
+  data() {
+    return {
+      warningMessage: 'No Posts selected!',
+      limit: ''
+    }
+  },
   components: {
-    HelloWorld
+    PostList
+  },
+  methods: {
+    ...mapActions(['getPosts']),
+    async onSubmit() {
+      this.getPosts(this.limit)
+      this.limit = ''
+    }
+  },
+  async mounted(){
+    this.getPosts()
+  },
+  computed: {
+    ...mapGetters(['allPosts', 'errorMessage'])
   }
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
