@@ -9,17 +9,21 @@
       </div>
     </form>
     <hr>
-    <PostList class="mt-4" v-if="allPosts.length" :posts="allPosts"/>
-    <div v-else-if="errorMessage" class="alert alert-danger mt-4" role="alert" >
-      {{ errorMessage }}
+    <Loader v-if="loading === true"/>
+    <div v-else>
+      <PostList class="mt-4" v-if="allPosts.length" :posts="allPosts"/>
+      <div v-else-if="errorMessage" class="alert alert-danger mt-4" role="alert" >
+        {{ errorMessage }}
+      </div>
+      <div v-else><div class="alert alert-warning mt-4" role="alert">
+        {{ warningMessage }}
+      </div></div>
     </div>
-    <div v-else><div class="alert alert-warning mt-4" role="alert">
-      {{ warningMessage }}
-    </div></div>
   </div>
 </template>
 
 <script>
+import Loader from "@/components/Loader"
 import PostList from '@/components/PostList.vue'
 import {mapActions, mapGetters} from 'vuex'
 
@@ -32,7 +36,8 @@ export default {
     }
   },
   components: {
-    PostList
+    PostList,
+    Loader
   },
   methods: {
     ...mapActions(['getPosts']),
@@ -45,7 +50,7 @@ export default {
     this.getPosts()
   },
   computed: {
-    ...mapGetters(['allPosts', 'errorMessage'])
+    ...mapGetters(['allPosts', 'loading', 'errorMessage'])
   }
 }
 </script>
